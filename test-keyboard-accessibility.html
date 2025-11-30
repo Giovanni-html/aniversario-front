@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Keyboard Accessibility</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body {
+            padding: 50px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #B76E79;
+        }
+        .test-description {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .test-result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        .test-result.pass {
+            background-color: #E8F5E9;
+            color: #388E3C;
+        }
+        .test-result.fail {
+            background-color: #FFEBEE;
+            color: #D32F2F;
+        }
+        .instructions {
+            background-color: #FFF9C4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #F57C00;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Keyboard Accessibility Test</h1>
+        
+        <div class="instructions">
+            <h3>📋 Manual Test Instructions</h3>
+            <ol>
+                <li><strong>Press Tab</strong> to navigate to the hint button below</li>
+                <li><strong>Verify</strong> that a visible outline appears around the button (rose gold color)</li>
+                <li><strong>Verify</strong> that the button morphs (text reveals, border changes) when focused</li>
+                <li><strong>Press Enter or Space</strong> to activate the button</li>
+                <li><strong>Press Tab again</strong> to move focus away and verify the button returns to idle state</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">Test 1: Tab Navigation</div>
+            <div class="test-description">
+                Press Tab to focus on the button. You should see a rose gold outline appear.
+            </div>
+            
+            <input type="text" placeholder="Start here - press Tab to move to button" style="padding: 10px; width: 100%; margin-bottom: 20px;">
+            
+            <div class="hint-button-wrapper" style="position: relative; display: inline-block;">
+                <button class="hint-btn" id="testButton1">
+                    <span class="text">Vai uma dica</span>
+                    <span class="icon">?</span>
+                </button>
+            </div>
+            
+            <input type="text" placeholder="Continue tabbing to reach here" style="padding: 10px; width: 100%; margin-top: 20px;">
+            
+            <div class="test-result" id="result1" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">Test 2: Focus Styles Match Hover</div>
+            <div class="test-description">
+                Both hover (mouse) and focus (keyboard) should trigger the same morphing animation.
+            </div>
+            
+            <div style="display: flex; gap: 40px; align-items: center;">
+                <div>
+                    <p><strong>Hover with mouse:</strong></p>
+                    <div class="hint-button-wrapper" style="position: relative; display: inline-block;">
+                        <button class="hint-btn" id="testButton2">
+                            <span class="text">Vai uma dica</span>
+                            <span class="icon">?</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <p><strong>Focus with Tab:</strong></p>
+                    <div class="hint-button-wrapper" style="position: relative; display: inline-block;">
+                        <button class="hint-btn" id="testButton3">
+                            <span class="text">Vai uma dica</span>
+                            <span class="icon">?</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">Test 3: Keyboard Activation</div>
+            <div class="test-description">
+                Focus the button with Tab, then press Enter or Space to activate it.
+            </div>
+            
+            <div class="hint-button-wrapper" style="position: relative; display: inline-block;">
+                <button class="hint-btn" id="testButton4">
+                    <span class="text">Vai uma dica</span>
+                    <span class="icon">?</span>
+                </button>
+            </div>
+            
+            <div class="test-result" id="result3" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Test 1: Detect focus
+        const testButton1 = document.getElementById('testButton1');
+        const result1 = document.getElementById('result1');
+        
+        testButton1.addEventListener('focus', () => {
+            result1.style.display = 'block';
+            result1.className = 'test-result pass';
+            result1.textContent = '✓ PASS: Button received focus via keyboard';
+        });
+
+        // Test 3: Detect keyboard activation
+        const testButton4 = document.getElementById('testButton4');
+        const result3 = document.getElementById('result3');
+        
+        testButton4.addEventListener('click', (e) => {
+            // Check if it was triggered by keyboard (Enter or Space)
+            if (e.detail === 0) {
+                result3.style.display = 'block';
+                result3.className = 'test-result pass';
+                result3.textContent = '✓ PASS: Button activated via keyboard (Enter/Space)';
+            } else {
+                result3.style.display = 'block';
+                result3.className = 'test-result pass';
+                result3.textContent = '✓ PASS: Button clicked with mouse';
+            }
+        });
+
+        // Log focus events for debugging
+        document.querySelectorAll('.hint-btn').forEach(btn => {
+            btn.addEventListener('focus', () => {
+                console.log('Button focused:', btn.id);
+            });
+            btn.addEventListener('blur', () => {
+                console.log('Button blurred:', btn.id);
+            });
+        });
+    </script>
+</body>
+</html>

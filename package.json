@@ -1,0 +1,23 @@
+{
+  "name": "aniversario-front",
+  "version": "1.0.0",
+  "description": "Frontend para sistema de confirmação de presença - 18 Anos da Brenda",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
+  },
+  "keywords": [
+    "aniversario",
+    "confirmacao",
+    "presenca"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdom": "^23.0.0"
+  }
+}
