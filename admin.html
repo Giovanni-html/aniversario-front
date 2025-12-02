@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Aniversário da Beh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #B76E79 0%, #8B5A63 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #B76E79;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-stats {
+            background: #4CAF50;
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .btn-stats:hover {
+            background: #45a049;
+        }
+        
+        .btn-clear {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: #da190b;
+        }
+        
+        .stats {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .stats p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        
+        .stats strong {
+            color: #B76E79;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .list-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎂 Painel Admin</h1>
+        
+        <div class="section">
+            <h2>📊 Estatísticas</h2>
+            <input type="password" id="senhaStats" placeholder="Senha de administrador">
+            <button class="btn-stats" onclick="verEstatisticas()">Ver Estatísticas</button>
+            <div id="statsResult"></div>
+        </div>
+        
+        <div class="section">
+            <h2>🗑️ Limpar Banco de Dados</h2>
+            <input type="password" id="senhaLimpar" placeholder="Senha de administrador">
+            <button class="btn-clear" onclick="limparBanco()">Limpar Todas as Confirmações</button>
+            <div id="clearResult"></div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'https://aniversario-back.onrender.com';
+        
+        async function verEstatisticas() {
+            const senha = document.getElementById('senhaStats').value;
+            const resultDiv = document.getElementById('statsResult');
+            
+            if (!senha) {
+                resultDiv.innerHTML = '<div class="message error">Digite a senha</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/estatisticas?senha=${senha}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = '<div class="stats">';
+                    html += `<p><strong>Total:</strong> ${data.total} confirmações</p>`;
+                    html += `<p><strong>Principais:</strong> ${data.principais}</p>`;
+                    html += `<p><strong>Acompanhantes:</strong> ${data.acompanhantes}</p>`;
+                    
+                    if (data.confirmacoes.length > 0) {
+                        html += '<div class="list">';
+                        data.confirmacoes.forEach(c => {
+                            const tipo = c.id_principal ? '(Acompanhante)' : '(Principal)';
+                            html += `<div class="list-item">${c.nome} ${tipo}</div>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    html += '</div>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div class="message error">${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="message error">Erro ao buscar estatísticas</div>';
+            }
+        }
+        
+        async function limparBanco() {
+            const senha = document.getElementById('senhaLimpar').value;
+            const resultDiv = document.getElementById('clearResult');
+            
+            if (!senha) {
+                resultDiv.innerHTML = '<div class="message error">Digite a senha</div>';
+                return;
+            }
+            
+            if (!confirm('⚠️ ATENÇÃO: Isso vai apagar TODAS as confirmações! Tem certeza?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/limpar-banco`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ senha })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = '<div class="message success">✅ Banco limpo com sucesso!</div>';
+                    // Limpar estatísticas também
+                    document.getElementById('statsResult').innerHTML = '';
+                } else {
+                    resultDiv.innerHTML = `<div class="message error">${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="message error">Erro ao limpar banco</div>';
+            }
+        }
+    </script>
+</body>
+</html>
