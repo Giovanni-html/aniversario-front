@@ -1,5 +1,5 @@
 // Configuração da API
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://aniversario-back.onrender.com';
 
 // Lista de nomes bloqueados (não podem confirmar presença)
 const NOMES_BLOQUEADOS = ['izabelle', 'iza', 'zabele', 'zaza'];
