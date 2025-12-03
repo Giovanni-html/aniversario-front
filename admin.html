@@ -129,9 +129,125 @@
             padding: 10px;
             border-bottom: 1px solid #ddd;
         }
+        
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s;
+        }
+        
+        .modal-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-text {
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .modal-btn-cancel:hover {
+            background: #d0d0d0;
+        }
+        
+        .modal-btn-confirm {
+            background: #f44336;
+            color: white;
+        }
+        
+        .modal-btn-confirm:hover {
+            background: #da190b;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Modal de Confirmação -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-icon">⚠️</div>
+            <h2 class="modal-title">Limpar Banco de Dados?</h2>
+            <p class="modal-text">
+                Esta ação vai apagar <strong>TODAS</strong> as confirmações de presença permanentemente. 
+                Esta operação não pode ser desfeita!
+            </p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="fecharModal()">Cancelar</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmarLimpeza()">Sim, Limpar Tudo</button>
+            </div>
+        </div>
+    </div>
+    
     <div class="container">
         <h1>🎂 Painel Admin</h1>
         
@@ -191,7 +307,7 @@
             }
         }
         
-        async function limparBanco() {
+        function limparBanco() {
             const senha = document.getElementById('senhaLimpar').value;
             const resultDiv = document.getElementById('clearResult');
             
@@ -200,9 +316,20 @@
                 return;
             }
             
-            if (!confirm('⚠️ ATENÇÃO: Isso vai apagar TODAS as confirmações! Tem certeza?')) {
-                return;
-            }
+            // Mostrar modal
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+        
+        function fecharModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+        
+        async function confirmarLimpeza() {
+            const senha = document.getElementById('senhaLimpar').value;
+            const resultDiv = document.getElementById('clearResult');
+            
+            // Fechar modal
+            fecharModal();
             
             try {
                 const response = await fetch(`${API_URL}/api/admin/limpar-banco`, {
@@ -226,6 +353,13 @@
                 resultDiv.innerHTML = '<div class="message error">Erro ao limpar banco</div>';
             }
         }
+        
+        // Fechar modal ao clicar fora
+        document.getElementById('modalOverlay')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharModal();
+            }
+        });
     </script>
 </body>
 </html>
