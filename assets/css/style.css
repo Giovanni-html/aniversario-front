@@ -121,12 +121,14 @@ body::before {
 }
 
 .main-title {
-    font-size: 72px;
-    font-weight: 300;
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 96px;
+    font-weight: 400;
     color: var(--prata);
-    letter-spacing: 8px;
+    letter-spacing: 12px;
     margin-bottom: 10px;
     animation: fadeIn 1.2s ease-out 0.3s both;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .sub-title {
