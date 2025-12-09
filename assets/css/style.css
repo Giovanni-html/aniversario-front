@@ -784,7 +784,7 @@ body::before {
     font-weight: 500;
 }
 
-/* Botão Flutuante "Vai uma dica?" - Morphing Button */
+/* Botão Flutuante "Vai uma dica?" */
 .hint-button-wrapper {
     position: fixed;
     bottom: 40px;
@@ -792,104 +792,54 @@ body::before {
     z-index: 1100;
 }
 
-/* Base button styles with Flexbox layout */
 .hint-btn {
     /* Layout */
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    /* Dimensions */
-    height: 40px;
-    min-width: 40px;
+    padding: 12px 24px;
     
     /* Visual */
-    background: transparent;
-    border: 2px solid #B76E79;
-    border-radius: 40px;
-    
-    /* Animation */
-    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-    -webkit-transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-    overflow: hidden;
+    background: var(--rose-gold);
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(183, 110, 121, 0.4);
     
     /* Typography */
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
-    color: #333;
+    color: var(--branco);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    white-space: nowrap;
     
     /* Interaction */
     cursor: pointer;
-    padding: 0;
+    transition: all 0.3s ease;
 }
 
-/* Text element - hidden state */
-.hint-btn .text {
-    max-width: 0;
-    opacity: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    margin-left: 0;
-    transition: all 0.5s ease;
+.hint-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(183, 110, 121, 0.5);
 }
 
-/* Icon element */
-.hint-btn .icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    font-size: 24px;
-    color: #B76E79;
+.hint-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(183, 110, 121, 0.4);
 }
 
-/* Hover state - border morphing */
-.hint-btn:hover,
+/* Focus para acessibilidade */
 .hint-btn:focus {
-    /* Border morphing */
-    border-top-color: transparent;
-    border-left-color: transparent;
-    border-right-color: transparent;
-    border-bottom: 2px solid #B76E79;
-    border-radius: 0;
-    
-    /* Dimensions */
-    height: 30px;
-    
-    /* Color */
-    color: #B76E79;
-}
-
-/* Focus-specific styles for keyboard navigation */
-.hint-btn:focus {
-    outline: 2px solid #B76E79;
+    outline: 2px solid var(--rose-gold);
     outline-offset: 4px;
 }
 
-/* Remove outline on mouse click but keep for keyboard */
 .hint-btn:focus:not(:focus-visible) {
     outline: none;
 }
 
-/* Ensure outline is visible for keyboard navigation */
 .hint-btn:focus-visible {
-    outline: 2px solid #B76E79;
+    outline: 2px solid var(--rose-gold);
     outline-offset: 4px;
-}
-
-/* Hover state - text reveal */
-.hint-btn:hover .text,
-.hint-btn:focus .text {
-    max-width: 200px;
-    opacity: 1;
-    margin-left: 10px;
-}
-
-/* Hover state - icon rotation */
-.hint-btn:hover .icon,
-.hint-btn:focus .icon {
-    transform: rotate(10deg);
 }
 
 /* Pop-up */
@@ -1243,21 +1193,44 @@ body::before {
         right: 20px;
     }
     
-    /* Tablet breakpoint - Morphing hint button */
+    /* Botão Confirmar - Tablet: cor fixa rose-gold, sem hover */
+    .btn-confirm::before {
+        background: var(--rose-gold);
+        transform: scale(1.05);
+        box-shadow: 0 4px 22px -8px rgba(183, 110, 121, 0.8);
+    }
+    
+    .btn-confirm .btn-content {
+        transform: scale(0.95);
+    }
+    
+    .btn-confirm {
+        --icon-scale: 1;
+        --icon-rotation: 0;
+        --icon-opacity: 1;
+    }
+    
+    /* Desabilitar hover no tablet */
+    .btn-confirm:hover::before {
+        background: var(--rose-gold);
+        transform: scale(1.05);
+        box-shadow: 0 4px 22px -8px rgba(183, 110, 121, 0.8);
+    }
+    
+    .btn-confirm:hover .btn-content {
+        transform: scale(0.95);
+    }
+    
+    .btn-confirm:hover {
+        --icon-scale: 1;
+        --icon-rotation: 0;
+        --icon-opacity: 1;
+    }
+    
+    /* Hint button - Tablet */
     .hint-btn {
-        height: 50px;
-        min-width: 50px;
-        font-size: 16px;
-    }
-    
-    .hint-btn .icon {
-        min-width: 46px;
-        font-size: 22px;
-    }
-    
-    .hint-btn:hover,
-    .hint-btn:focus {
-        height: 36px;
+        font-size: 15px;
+        padding: 10px 20px;
     }
     
     /* Popup colunas em tablet */
@@ -1288,6 +1261,40 @@ body::before {
 @media (max-width: 480px) {
     body {
         padding: 15px;
+    }
+    
+    /* Botão Confirmar - Mobile: cor fixa rose-gold, sem hover */
+    .btn-confirm::before {
+        background: var(--rose-gold);
+        transform: scale(1.05);
+        box-shadow: 0 4px 22px -8px rgba(183, 110, 121, 0.8);
+    }
+    
+    .btn-confirm .btn-content {
+        transform: scale(0.95);
+    }
+    
+    .btn-confirm {
+        --icon-scale: 1;
+        --icon-rotation: 0;
+        --icon-opacity: 1;
+    }
+    
+    /* Desabilitar hover no mobile */
+    .btn-confirm:hover::before {
+        background: var(--rose-gold);
+        transform: scale(1.05);
+        box-shadow: 0 4px 22px -8px rgba(183, 110, 121, 0.8);
+    }
+    
+    .btn-confirm:hover .btn-content {
+        transform: scale(0.95);
+    }
+    
+    .btn-confirm:hover {
+        --icon-scale: 1;
+        --icon-rotation: 0;
+        --icon-opacity: 1;
     }
     
     /* Títulos otimizados para mobile */
@@ -1457,31 +1464,15 @@ body::before {
         width: 2.4em;
     }
     
-    /* Hint button otimizado */
+    /* Hint button - Mobile */
     .hint-button-wrapper {
         bottom: 15px;
         right: 15px;
     }
     
     .hint-btn {
-        height: 45px;
-        min-width: 45px;
-        font-size: 15px;
-    }
-    
-    .hint-btn .icon {
-        min-width: 41px;
-        font-size: 20px;
-    }
-    
-    .hint-btn .text {
-        max-width: 0;
-        font-size: 15px;
-    }
-    
-    .hint-btn:hover .text,
-    .hint-btn:focus .text {
-        max-width: calc(100vw - 100px);
+        font-size: 14px;
+        padding: 10px 18px;
     }
     
     /* Sucesso otimizado */
@@ -1506,45 +1497,11 @@ body::before {
 
 /* Accessibility: Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
-    /* Disable all transitions and animations for morphing button */
-    .hint-btn,
-    .hint-btn .text,
-    .hint-btn .icon {
-        transition: none !important;
-        -webkit-transition: none !important;
-        animation: none !important;
-    }
-    
-    /* Disable other animations throughout the page */
     *,
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
-    }
-    
-    /* Keep the morphed state visible on hover/focus without animation */
-    .hint-btn:hover,
-    .hint-btn:focus {
-        border-top-color: transparent;
-        border-left-color: transparent;
-        border-right-color: transparent;
-        border-bottom: 2px solid #B76E79;
-        border-radius: 0;
-        height: 30px;
-        color: #B76E79;
-    }
-    
-    .hint-btn:hover .text,
-    .hint-btn:focus .text {
-        max-width: 200px;
-        opacity: 1;
-        margin-left: 10px;
-    }
-    
-    .hint-btn:hover .icon,
-    .hint-btn:focus .icon {
-        transform: rotate(10deg);
     }
 }
