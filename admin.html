@@ -703,7 +703,8 @@
         // Logout
         function logout() {
             localStorage.removeItem('adminAuth');
-            window.location.href = 'login.html';
+            // Forçar redirecionamento limpo
+            window.location.replace('login.html');
         }
         
         let deleteConfirmationData = null;

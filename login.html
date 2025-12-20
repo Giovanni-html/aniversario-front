@@ -268,8 +268,31 @@
             window.location.href = 'admin.html';
         }
         
+        // Reset completo da página
+        function resetPage() {
+            // Forçar scroll para o topo
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            
+            // Reset de qualquer transformação CSS
+            document.body.style.transform = 'none';
+            document.body.style.position = 'relative';
+            document.body.style.top = '0';
+            document.body.style.left = '0';
+            
+            // Forçar reflow
+            document.body.offsetHeight;
+        }
+        
+        // Executar reset imediatamente
+        resetPage();
+        
         // Aguardar carregamento completo da página
         document.addEventListener('DOMContentLoaded', function() {
+            // Reset novamente após DOM carregar
+            resetPage();
+            
             // Mostrar página imediatamente
             document.body.classList.add('loaded');
             
@@ -279,6 +302,8 @@
                 if (container) {
                     container.classList.add('show');
                 }
+                // Reset final após animação
+                setTimeout(resetPage, 100);
             }, 50);
             
             // Configurar formulário
@@ -334,6 +359,19 @@
         
         // Prevenir zoom no iOS ao focar inputs
         document.addEventListener('touchstart', function() {}, {passive: true});
+        
+        // Reset quando a página fica visível
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                resetPage();
+            }
+        });
+        
+        // Reset no evento de foco da janela
+        window.addEventListener('focus', resetPage);
+        
+        // Reset no evento de resize
+        window.addEventListener('resize', resetPage);
     </script>
 </body>
 </html>
