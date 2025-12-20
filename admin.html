@@ -451,7 +451,8 @@
             if (!checkAuth()) return;
             
             try {
-                const response = await fetch(`${API_URL}/api/admin/dashboard`);
+                // Usar o endpoint existente com uma senha padrão
+                const response = await fetch(`${API_URL}/api/admin/estatisticas?senha=beh2025`);
                 const data = await response.json();
                 
                 if (data.success) {
@@ -459,6 +460,8 @@
                     updateGuestList(data.confirmacoes);
                     createChart(data.confirmacoes);
                     updateLastUpdate();
+                } else {
+                    console.error('Erro na API:', data.message);
                 }
             } catch (error) {
                 console.error('Erro ao carregar dashboard:', error);
