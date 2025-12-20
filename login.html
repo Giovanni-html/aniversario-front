@@ -2,7 +2,10 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#B76E79">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Login - Admin Dashboard</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <style>
@@ -29,6 +32,12 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        body.loaded {
+            opacity: 1;
         }
         
         .login-container {
@@ -39,6 +48,14 @@
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+        
+        .login-container.show {
+            transform: translateY(0);
+            opacity: 1;
         }
         
         .login-title {
@@ -75,6 +92,10 @@
             font-size: 16px;
             transition: all 0.3s ease;
             font-family: inherit;
+            background: var(--branco);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
         
         .form-input:focus {
@@ -95,6 +116,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            touch-action: manipulation;
         }
         
         .login-btn:hover {
@@ -122,8 +147,37 @@
         }
         
         @media (max-width: 480px) {
+            body {
+                padding: 15px;
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+            }
+            
             .login-container {
                 padding: 40px 30px;
+                border-radius: 15px;
+                max-width: 100%;
+            }
+            
+            .login-title {
+                font-size: 24px;
+            }
+            
+            .form-input {
+                padding: 12px 16px;
+                font-size: 16px;
+            }
+            
+            .login-btn {
+                padding: 12px;
+                font-size: 15px;
+            }
+        }
+        
+        /* Fix para iOS Safari */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                min-height: -webkit-fill-available;
             }
         }
     </style>
@@ -141,12 +195,27 @@
         <form id="loginForm">
             <div class="form-group">
                 <label for="username" class="form-label">Usuário</label>
-                <input type="text" id="username" class="form-input" required>
+                <input 
+                    type="text" 
+                    id="username" 
+                    class="form-input" 
+                    required
+                    autocomplete="username"
+                    autocapitalize="none"
+                    autocorrect="off"
+                    spellcheck="false"
+                >
             </div>
             
             <div class="form-group">
                 <label for="password" class="form-label">Senha</label>
-                <input type="password" id="password" class="form-input" required>
+                <input 
+                    type="password" 
+                    id="password" 
+                    class="form-input" 
+                    required
+                    autocomplete="current-password"
+                >
             </div>
             
             <button type="submit" class="login-btn">Entrar</button>
@@ -156,33 +225,79 @@
     </div>
     
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('errorMessage');
-            
-            if (username === 'brendinha' && password === 'beh-versario2026!') {
-                // Salvar token de autenticação
-                localStorage.setItem('adminAuth', 'authenticated');
-                // Redirecionar para admin
-                window.location.href = 'admin.html';
-            } else {
-                errorDiv.textContent = 'Usuário ou senha incorretos';
-                errorDiv.classList.add('show');
-                
-                // Limpar erro após 3 segundos
-                setTimeout(() => {
-                    errorDiv.classList.remove('show');
-                }, 3000);
-            }
-        });
-        
-        // Verificar se já está logado
+        // Verificar se já está logado (executa imediatamente)
         if (localStorage.getItem('adminAuth') === 'authenticated') {
             window.location.href = 'admin.html';
         }
+        
+        // Aguardar carregamento completo da página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar página com animação
+            document.body.classList.add('loaded');
+            
+            // Mostrar container com delay
+            setTimeout(() => {
+                document.querySelector('.login-container').classList.add('show');
+            }, 100);
+            
+            // Configurar formulário
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (!loginForm || !usernameInput || !passwordInput || !errorDiv) {
+                console.error('Elementos do formulário não encontrados');
+                return;
+            }
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('Formulário submetido');
+                
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                console.log('Username:', username);
+                console.log('Password length:', password.length);
+                
+                if (username === 'brendinha' && password === 'beh-versario2026!') {
+                    console.log('Login válido, salvando token...');
+                    // Salvar token de autenticação
+                    localStorage.setItem('adminAuth', 'authenticated');
+                    console.log('Token salvo, redirecionando...');
+                    // Redirecionar para admin
+                    window.location.href = 'admin.html';
+                } else {
+                    console.log('Login inválido');
+                    errorDiv.textContent = 'Usuário ou senha incorretos';
+                    errorDiv.classList.add('show');
+                    
+                    // Limpar erro após 3 segundos
+                    setTimeout(() => {
+                        errorDiv.classList.remove('show');
+                    }, 3000);
+                }
+            });
+            
+            // Adicionar evento de Enter nos inputs
+            [usernameInput, passwordInput].forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        loginForm.dispatchEvent(new Event('submit'));
+                    }
+                });
+            });
+        });
+        
+        // Prevenir zoom no iOS ao focar inputs
+        document.addEventListener('touchstart', function() {
+            const viewportMeta = document.querySelector('meta[name="viewport"]');
+            if (viewportMeta) {
+                viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+            }
+        });
     </script>
 </body>
 </html>
