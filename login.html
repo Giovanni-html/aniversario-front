@@ -22,21 +22,20 @@
             --branco: #FFFFFF;
             --texto-escuro: #333333;
             --texto-claro: #666666;
-            --vh: 1vh;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, var(--rose-gold) 0%, #8B5A63 100%);
             min-height: 100vh;
-            min-height: -webkit-fill-available;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            margin: 0;
             opacity: 0;
             transition: opacity 0.3s ease;
-            overflow-x: hidden;
+            position: relative;
         }
         
         body.loaded {
@@ -151,56 +150,61 @@
         
         @media (max-width: 480px) {
             body {
-                padding: 10px;
+                padding: 15px;
+                align-items: center;
+                justify-content: center;
                 min-height: 100vh;
-                min-height: -webkit-fill-available;
-                align-items: flex-start;
-                padding-top: 5vh;
+                height: 100vh;
+                overflow: hidden;
             }
             
             .login-container {
                 padding: 30px 25px;
                 border-radius: 15px;
-                max-width: 100%;
+                max-width: 350px;
                 width: 100%;
-                margin: 0;
-                box-sizing: border-box;
+                margin: 0 auto;
+                position: relative;
+                top: 0;
+                transform: none;
             }
             
             .login-title {
                 font-size: 22px;
-                margin-bottom: 20px;
+                margin-bottom: 15px;
             }
             
             .login-subtitle {
                 font-size: 13px;
-                margin-bottom: 30px;
+                margin-bottom: 25px;
             }
             
             .form-group {
-                margin-bottom: 20px;
+                margin-bottom: 18px;
             }
             
             .form-input {
                 padding: 12px 16px;
                 font-size: 16px;
+                border-radius: 10px;
             }
             
             .login-btn {
                 padding: 12px;
                 font-size: 15px;
+                border-radius: 10px;
+                margin-top: 15px;
             }
         }
         
         @media (max-width: 360px) {
             body {
-                padding: 5px;
-                padding-top: 3vh;
+                padding: 10px;
             }
             
             .login-container {
                 padding: 25px 20px;
-                border-radius: 12px;
+                max-width: 320px;
             }
             
             .login-title {
@@ -211,14 +215,7 @@
         /* Fix específico para iOS Safari */
         @supports (-webkit-touch-callout: none) {
             body {
-                min-height: -webkit-fill-available;
-            }
-            
-            @media (max-width: 480px) {
-                body {
-                    min-height: calc(var(--vh, 1vh) * 100);
-                    height: calc(var(--vh, 1vh) * 100);
-                }
+                min-height: 100vh;
             }
         }
     </style>
@@ -273,31 +270,16 @@
         
         // Aguardar carregamento completo da página
         document.addEventListener('DOMContentLoaded', function() {
-            // Forçar scroll para o topo
-            window.scrollTo(0, 0);
-            
-            // Mostrar página com animação
+            // Mostrar página imediatamente
             document.body.classList.add('loaded');
             
-            // Mostrar container com delay
+            // Mostrar container
             setTimeout(() => {
                 const container = document.querySelector('.login-container');
                 if (container) {
                     container.classList.add('show');
                 }
-            }, 100);
-            
-            // Ajustar altura em dispositivos móveis
-            function adjustHeight() {
-                const vh = window.innerHeight * 0.01;
-                document.documentElement.style.setProperty('--vh', `${vh}px`);
-            }
-            
-            adjustHeight();
-            window.addEventListener('resize', adjustHeight);
-            window.addEventListener('orientationchange', () => {
-                setTimeout(adjustHeight, 100);
-            });
+            }, 50);
             
             // Configurar formulário
             const loginForm = document.getElementById('loginForm');
@@ -351,12 +333,7 @@
         });
         
         // Prevenir zoom no iOS ao focar inputs
-        document.addEventListener('touchstart', function() {
-            const viewportMeta = document.querySelector('meta[name="viewport"]');
-            if (viewportMeta) {
-                viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-            }
-        });
+        document.addEventListener('touchstart', function() {}, {passive: true});
     </script>
 </body>
 </html>
