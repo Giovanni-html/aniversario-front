@@ -257,6 +257,184 @@
             font-size: 12px;
             color: var(--texto-claro);
             text-align: right;
+            min-width: 120px;
+        }
+        
+        .guest-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 15px;
+        }
+        
+        .btn-delete {
+            background: #ff4757;
+            color: var(--branco);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-delete:hover {
+            background: #ff3742;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+        }
+        
+        .btn-delete:active {
+            transform: translateY(0);
+        }
+        
+        .btn-delete svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        /* Modal de Confirmação */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--branco);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s;
+        }
+        
+        .modal-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            color: var(--texto-escuro);
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .modal-text {
+            font-size: 14px;
+            color: var(--texto-claro);
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn-cancel {
+            background: var(--prata-claro);
+            color: var(--texto-escuro);
+        }
+        
+        .modal-btn-cancel:hover {
+            background: var(--prata);
+        }
+        
+        .modal-btn-confirm {
+            background: #ff4757;
+            color: var(--branco);
+        }
+        
+        .modal-btn-confirm:hover {
+            background: #ff3742;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Toast de Notificação */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--branco);
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 300px;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            border-left: 4px solid #2ed573;
+        }
+        
+        .toast.error {
+            border-left: 4px solid #ff4757;
+        }
+        
+        .toast-icon {
+            font-size: 18px;
+        }
+        
+        .toast-message {
+            font-size: 14px;
+            color: var(--texto-escuro);
         }
         
         .no-results {
@@ -321,6 +499,11 @@
             
             .guest-avatar {
                 margin-right: 0;
+            }
+            
+            .guest-actions {
+                margin-left: 0;
+                margin-top: 10px;
             }
         }
     </style>
@@ -426,6 +609,25 @@
         </div>
     </div>
     
+    <!-- Modal de Confirmação -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#ff4757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h3 class="modal-title">Excluir Confirmação?</h3>
+            <p class="modal-text" id="deleteModalText">
+                Esta ação não pode ser desfeita.
+            </p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancelar</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmDelete()">Excluir</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         const API_URL = 'https://aniversario-back.onrender.com';
         let allGuests = [];
@@ -445,6 +647,91 @@
             localStorage.removeItem('adminAuth');
             window.location.href = 'login.html';
         }
+        
+        let deleteConfirmationData = null;
+        
+        // Mostrar toast de notificação
+        function showToast(message, type = 'success') {
+            // Remover toast existente
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' ? '✓' : '✗';
+            
+            toast.innerHTML = `
+                <div class="toast-icon">${icon}</div>
+                <div class="toast-message">${message}</div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Mostrar toast
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            // Remover toast após 3 segundos
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        // Abrir modal de confirmação
+        function openDeleteModal(id, nome) {
+            deleteConfirmationData = { id, nome };
+            document.getElementById('deleteModalText').textContent = 
+                `Tem certeza que deseja excluir "${nome}" e todos os seus acompanhantes? Esta ação não pode ser desfeita.`;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+        
+        // Fechar modal de confirmação
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deleteConfirmationData = null;
+        }
+        
+        // Confirmar exclusão
+        async function confirmDelete() {
+            if (!deleteConfirmationData) return;
+            
+            const { id, nome } = deleteConfirmationData;
+            closeDeleteModal();
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/confirmacao/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Confirmação excluída com sucesso!', 'success');
+                    // Recarregar dados
+                    await loadDashboard();
+                } else {
+                    showToast('Erro ao excluir confirmação: ' + data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir confirmação:', error);
+                showToast('Erro ao excluir confirmação', 'error');
+            }
+        }
+        
+        // Deletar confirmação (função chamada pelo botão)
+        function deleteConfirmation(id, nome) {
+            openDeleteModal(id, nome);
+        }
+        
+        // Fechar modal ao clicar fora
+        document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
         
         // Carregar dados
         async function loadDashboard() {
@@ -539,6 +826,17 @@
                             ` : ''}
                         </div>
                         <div class="guest-date">${date}</div>
+                        <div class="guest-actions">
+                            <button class="btn-delete" onclick="deleteConfirmation(${principal.id}, '${principal.nome.replace(/'/g, "\\'")}')">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Excluir
+                            </button>
+                        </div>
                     </div>
                 `;
             });
