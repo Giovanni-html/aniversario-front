@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Aniversário da Beh</title>
+    <title>Dashboard Admin - Aniversário da Beh</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,353 +13,637 @@
             box-sizing: border-box;
         }
         
+        :root {
+            --rose-gold: #B76E79;
+            --prata: #C0C0C0;
+            --prata-claro: #E8E8E8;
+            --branco: #FFFFFF;
+            --texto-escuro: #333333;
+            --texto-claro: #666666;
+            --fundo: #F8F9FA;
+            --sombra: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #B76E79 0%, #8B5A63 100%);
-            min-height: 100vh;
+            background: var(--fundo);
+            color: var(--texto-escuro);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--branco);
+            padding: 20px 30px;
+            box-shadow: var(--sombra);
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        
-        h1 {
-            color: #B76E79;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .section {
-            margin-bottom: 30px;
-        }
-        
-        .section h2 {
-            color: #333;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-        
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-        
-        button {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-stats {
-            background: #4CAF50;
-            color: white;
-            margin-bottom: 10px;
-        }
-        
-        .btn-stats:hover {
-            background: #45a049;
-        }
-        
-        .btn-clear {
-            background: #f44336;
-            color: white;
-        }
-        
-        .btn-clear:hover {
-            background: #da190b;
-        }
-        
-        .stats {
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .stats p {
-            margin: 10px 0;
-            font-size: 16px;
-        }
-        
-        .stats strong {
-            color: #B76E79;
-        }
-        
-        .message {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: center;
-        }
-        
-        .success {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .list {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 15px;
-        }
-        
-        .list-item {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        /* Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s;
+            z-index: 100;
         }
         
-        .modal-overlay.show {
-            display: flex;
-        }
-        
-        .modal {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s;
-        }
-        
-        .modal-icon {
-            font-size: 48px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .modal-title {
+        .header-title {
+            color: var(--rose-gold);
             font-size: 24px;
-            color: #333;
+            font-weight: 600;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .btn-logout {
+            background: var(--prata);
+            color: var(--branco);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-logout:hover {
+            background: var(--rose-gold);
+            transform: translateY(-1px);
+        }
+        
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--sombra);
             text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 48px;
             margin-bottom: 15px;
         }
         
-        .modal-text {
-            font-size: 16px;
-            color: #666;
-            text-align: center;
-            margin-bottom: 25px;
-            line-height: 1.5;
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--rose-gold);
+            margin-bottom: 5px;
         }
         
-        .modal-buttons {
+        .stat-label {
+            color: var(--texto-claro);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Chart Section */
+        .chart-section {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--sombra);
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: var(--texto-escuro);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
             display: flex;
+            align-items: center;
             gap: 10px;
         }
         
-        .modal-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+        
+        /* Guest List Section */
+        .guest-section {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--sombra);
+        }
+        
+        .search-container {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .search-container::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z' fill='%23666666'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid var(--prata-claro);
+            border-radius: 12px;
             font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
         
-        .modal-btn-cancel {
-            background: #e0e0e0;
-            color: #333;
+        .search-input:focus {
+            outline: none;
+            border-color: var(--rose-gold);
+            box-shadow: 0 0 0 3px rgba(183, 110, 121, 0.1);
         }
         
-        .modal-btn-cancel:hover {
-            background: #d0d0d0;
+        .guest-list {
+            max-height: 600px;
+            overflow-y: auto;
         }
         
-        .modal-btn-confirm {
-            background: #f44336;
-            color: white;
+        .guest-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--prata-claro);
+            transition: background 0.3s ease;
         }
         
-        .modal-btn-confirm:hover {
-            background: #da190b;
+        .guest-item:hover {
+            background: #F8F9FA;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .guest-item:last-child {
+            border-bottom: none;
         }
         
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
+        .guest-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--rose-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--branco);
+            font-weight: 600;
+            font-size: 18px;
+            margin-right: 20px;
+        }
+        
+        .guest-info {
+            flex: 1;
+        }
+        
+        .guest-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--texto-escuro);
+            margin-bottom: 5px;
+        }
+        
+        .guest-details {
+            font-size: 14px;
+            color: var(--texto-claro);
+        }
+        
+        .guest-companions {
+            margin-top: 8px;
+        }
+        
+        .companion-tag {
+            display: inline-block;
+            background: var(--prata-claro);
+            color: var(--texto-claro);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 3px;
+        }
+        
+        .guest-date {
+            font-size: 12px;
+            color: var(--texto-claro);
+            text-align: right;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--texto-claro);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--texto-claro);
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--prata-claro);
+            border-top-color: var(--rose-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px;
             }
-            to {
-                transform: translateY(0);
-                opacity: 1;
+            
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .header-title {
+                font-size: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stat-card {
+                padding: 25px;
+            }
+            
+            .chart-section,
+            .guest-section {
+                padding: 20px;
+            }
+            
+            .guest-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .guest-avatar {
+                margin-right: 0;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Modal de Confirmação -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
-            <div class="modal-icon">⚠️</div>
-            <h2 class="modal-title">Limpar Banco de Dados?</h2>
-            <p class="modal-text">
-                Esta ação vai apagar <strong>TODAS</strong> as confirmações de presença permanentemente. 
-                Esta operação não pode ser desfeita!
-            </p>
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-cancel" onclick="fecharModal()">Cancelar</button>
-                <button class="modal-btn modal-btn-confirm" onclick="confirmarLimpeza()">Sim, Limpar Tudo</button>
+    <!-- Header -->
+    <header class="header">
+        <h1 class="header-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 8px;">
+                <path d="M3 13H11V3H3V13ZM3 21H11V15H3V21ZM13 21H21V11H13V21ZM13 3V9H21V3H13Z" fill="currentColor"/>
+            </svg>
+            Dashboard Admin
+        </h1>
+        <div class="header-actions">
+            <span id="lastUpdate">Carregando...</span>
+            <button class="btn-logout" onclick="logout()">Sair</button>
+        </div>
+    </header>
+    
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                        <path d="M16 4C18.2091 4 20 5.79086 20 8C20 10.2091 18.2091 12 16 12C13.7909 12 12 10.2091 12 8C12 5.79086 13.7909 4 16 4ZM16 14C20.4183 14 24 17.5817 24 22H8C8 17.5817 11.5817 14 16 14ZM8 12C10.2091 12 12 10.2091 12 8C12 5.79086 10.2091 4 8 4C5.79086 4 4 5.79086 4 8C4 10.2091 5.79086 12 8 12ZM8 14C3.58172 14 0 17.5817 0 22H8V14Z" fill="#B76E79"/>
+                    </svg>
+                </div>
+                <div class="stat-number" id="totalGuests">-</div>
+                <div class="stat-label">Total de Pessoas</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM12 14.5C14.33 14.5 16.31 16.04 17.11 18.28C17.65 19.96 16.47 21.75 14.74 21.75H9.26C7.53 21.75 6.35 19.96 6.89 18.28C7.69 16.04 9.67 14.5 12 14.5ZM12 7C14.21 7 16 8.79 16 11C16 13.21 14.21 15 12 15C9.79 15 8 13.21 8 11C8 8.79 9.79 7 12 7Z" fill="#B76E79"/>
+                    </svg>
+                </div>
+                <div class="stat-number" id="totalPrincipals">-</div>
+                <div class="stat-label">Convidados Principais</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 13C5.1 13 6 12.1 6 11C6 9.9 5.1 9 4 9C2.9 9 2 9.9 2 11C2 12.1 2.9 13 4 13ZM5.13 14.1C4.76 14.04 4.39 14 4 14C3.01 14 2.07 14.21 1.22 14.58C0.48 14.9 0 15.62 0 16.43V18H4.5V16.39C4.5 15.56 4.73 14.78 5.13 14.1ZM20 13C21.1 13 22 12.1 22 11C22 9.9 21.1 9 20 9C18.9 9 18 9.9 18 11C18 12.1 18.9 13 20 13ZM24 16.43C24 15.62 23.52 14.9 22.78 14.58C21.93 14.21 20.99 14 20 14C19.61 14 19.24 14.04 18.87 14.1C19.27 14.78 19.5 15.56 19.5 16.39V18H24V16.43ZM16.24 13.65C15.07 13.13 13.63 12.75 12 12.75C10.37 12.75 8.93 13.13 7.76 13.65C6.68 14.13 6 15.21 6 16.39V18H18V16.39C18 15.21 17.32 14.13 16.24 13.65ZM8.07 16C8.16 15.77 8.2 15.61 8.98 15.31C9.95 14.93 10.97 14.75 12 14.75C13.03 14.75 14.05 14.93 15.02 15.31C15.8 15.61 15.84 15.77 15.93 16H8.07ZM12 8C12.55 8 13 8.45 13 9C13 9.55 12.55 10 12 10C11.45 10 11 9.55 11 9C11 8.45 11.45 8 12 8ZM12 6C10.34 6 9 7.34 9 9C9 10.66 10.34 12 12 12C13.66 12 15 10.66 15 9C15 7.34 13.66 6 12 6Z" fill="#B76E79"/>
+                    </svg>
+                </div>
+                <div class="stat-number" id="totalCompanions">-</div>
+                <div class="stat-label">Acompanhantes</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3.01 3.9 3.01 5L3 19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V8H19V19ZM7 10H12V15H7V10Z" fill="#B76E79"/>
+                    </svg>
+                </div>
+                <div class="stat-number" id="todayConfirmations">-</div>
+                <div class="stat-label">Confirmações Hoje</div>
             </div>
         </div>
-    </div>
-    
-    <div class="container">
-        <h1>🎂 Painel Admin</h1>
         
-        <div class="section">
-            <h2>📊 Estatísticas</h2>
-            <input type="password" id="senhaStats" placeholder="Senha de administrador">
-            <button class="btn-stats" onclick="verEstatisticas()">Ver Estatísticas</button>
-            <div id="statsResult"></div>
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <h2 class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
+                    <path d="M22 21H2L4 3H20L22 21ZM4 9H20V7H4V9ZM5.5 5H18.5L18.1 7H5.9L5.5 5ZM6.2 19H17.8L17.4 17H6.6L6.2 19ZM7 11H17V13H7V11ZM8 15H16V17H8V15Z" fill="currentColor"/>
+                </svg>
+                Confirmações por Dia
+            </h2>
+            <div class="chart-container">
+                <canvas id="confirmationsChart"></canvas>
+            </div>
         </div>
         
-        <div class="section">
-            <h2>🗑️ Limpar Banco de Dados</h2>
-            <input type="password" id="senhaLimpar" placeholder="Senha de administrador">
-            <button class="btn-clear" onclick="limparBanco()">Limpar Todas as Confirmações</button>
-            <div id="clearResult"></div>
+        <!-- Guest List Section -->
+        <div class="guest-section">
+            <h2 class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
+                    <path d="M3 5H21V3H3V5ZM3 13H21V11H3V13ZM3 21H21V19H3V21Z" fill="currentColor"/>
+                </svg>
+                Lista de Convidados
+            </h2>
+            
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Buscar por nome..."
+                    oninput="filterGuests()"
+                >
+            </div>
+            
+            <div id="guestList" class="guest-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Carregando lista de convidados...
+                </div>
+            </div>
         </div>
     </div>
     
     <script>
         const API_URL = 'https://aniversario-back.onrender.com';
+        let allGuests = [];
+        let chart = null;
         
-        async function verEstatisticas() {
-            const senha = document.getElementById('senhaStats').value;
-            const resultDiv = document.getElementById('statsResult');
-            
-            if (!senha) {
-                resultDiv.innerHTML = '<div class="message error">Digite a senha</div>';
-                return;
+        // Verificar autenticação
+        function checkAuth() {
+            if (localStorage.getItem('adminAuth') !== 'authenticated') {
+                window.location.href = 'login.html';
+                return false;
             }
+            return true;
+        }
+        
+        // Logout
+        function logout() {
+            localStorage.removeItem('adminAuth');
+            window.location.href = 'login.html';
+        }
+        
+        // Carregar dados
+        async function loadDashboard() {
+            if (!checkAuth()) return;
             
             try {
-                const response = await fetch(`${API_URL}/api/admin/estatisticas?senha=${senha}`);
+                const response = await fetch(`${API_URL}/api/admin/dashboard`);
                 const data = await response.json();
                 
                 if (data.success) {
-                    let html = '<div class="stats">';
-                    html += `<p><strong>Total:</strong> ${data.total} confirmações</p>`;
-                    html += `<p><strong>Principais:</strong> ${data.principais}</p>`;
-                    html += `<p><strong>Acompanhantes:</strong> ${data.acompanhantes}</p>`;
-                    
-                    if (data.confirmacoes.length > 0) {
-                        html += '<div class="list">';
-                        data.confirmacoes.forEach(c => {
-                            const tipo = c.id_principal ? '(Acompanhante)' : '(Principal)';
-                            html += `<div class="list-item">${c.nome} ${tipo}</div>`;
-                        });
-                        html += '</div>';
-                    }
-                    
-                    html += '</div>';
-                    resultDiv.innerHTML = html;
-                } else {
-                    resultDiv.innerHTML = `<div class="message error">${data.message}</div>`;
+                    updateStats(data);
+                    updateGuestList(data.confirmacoes);
+                    createChart(data.confirmacoes);
+                    updateLastUpdate();
                 }
             } catch (error) {
-                resultDiv.innerHTML = '<div class="message error">Erro ao buscar estatísticas</div>';
+                console.error('Erro ao carregar dashboard:', error);
             }
         }
         
-        function limparBanco() {
-            const senha = document.getElementById('senhaLimpar').value;
-            const resultDiv = document.getElementById('clearResult');
+        // Atualizar estatísticas
+        function updateStats(data) {
+            document.getElementById('totalGuests').textContent = data.total;
+            document.getElementById('totalPrincipals').textContent = data.principais;
+            document.getElementById('totalCompanions').textContent = data.acompanhantes;
             
-            if (!senha) {
-                resultDiv.innerHTML = '<div class="message error">Digite a senha</div>';
+            // Calcular confirmações de hoje
+            const today = new Date().toDateString();
+            const todayCount = data.confirmacoes.filter(c => 
+                new Date(c.data_confirmacao).toDateString() === today
+            ).length;
+            document.getElementById('todayConfirmations').textContent = todayCount;
+        }
+        
+        // Atualizar lista de convidados
+        function updateGuestList(guests) {
+            allGuests = guests;
+            renderGuestList(guests);
+        }
+        
+        // Renderizar lista de convidados
+        function renderGuestList(guests) {
+            const container = document.getElementById('guestList');
+            
+            if (guests.length === 0) {
+                container.innerHTML = '<div class="no-results">Nenhum convidado encontrado</div>';
                 return;
             }
             
-            // Mostrar modal
-            document.getElementById('modalOverlay').classList.add('show');
+            // Agrupar por convidado principal
+            const grouped = {};
+            guests.forEach(guest => {
+                const principalId = guest.id_principal || guest.id;
+                if (!grouped[principalId]) {
+                    grouped[principalId] = {
+                        principal: guest.id_principal ? null : guest,
+                        companions: []
+                    };
+                }
+                
+                if (guest.id_principal) {
+                    grouped[principalId].companions.push(guest);
+                } else if (!grouped[principalId].principal) {
+                    grouped[principalId].principal = guest;
+                }
+            });
+            
+            let html = '';
+            Object.values(grouped).forEach(group => {
+                if (!group.principal) return;
+                
+                const principal = group.principal;
+                const companions = group.companions;
+                const initials = principal.nome.split(' ').map(n => n[0]).join('').toUpperCase();
+                const date = new Date(principal.data_confirmacao).toLocaleString('pt-BR');
+                
+                html += `
+                    <div class="guest-item">
+                        <div class="guest-avatar">${initials}</div>
+                        <div class="guest-info">
+                            <div class="guest-name">${principal.nome}</div>
+                            <div class="guest-details">
+                                Convidado Principal • ${companions.length} acompanhante${companions.length !== 1 ? 's' : ''}
+                            </div>
+                            ${companions.length > 0 ? `
+                                <div class="guest-companions">
+                                    ${companions.map(c => `<span class="companion-tag">${c.nome}</span>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="guest-date">${date}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
         }
         
-        function fecharModal() {
-            document.getElementById('modalOverlay').classList.remove('show');
+        // Filtrar convidados
+        function filterGuests() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (!search) {
+                renderGuestList(allGuests);
+                return;
+            }
+            
+            const filtered = allGuests.filter(guest => 
+                guest.nome.toLowerCase().includes(search)
+            );
+            
+            renderGuestList(filtered);
         }
         
-        async function confirmarLimpeza() {
-            const senha = document.getElementById('senhaLimpar').value;
-            const resultDiv = document.getElementById('clearResult');
+        // Criar gráfico
+        function createChart(guests) {
+            const ctx = document.getElementById('confirmationsChart').getContext('2d');
             
-            // Fechar modal
-            fecharModal();
+            // Agrupar por data
+            const dateGroups = {};
+            guests.forEach(guest => {
+                const date = new Date(guest.data_confirmacao).toDateString();
+                if (!dateGroups[date]) {
+                    dateGroups[date] = { principals: 0, companions: 0 };
+                }
+                
+                if (guest.id_principal) {
+                    dateGroups[date].companions++;
+                } else {
+                    dateGroups[date].principals++;
+                }
+            });
             
-            try {
-                const response = await fetch(`${API_URL}/api/admin/limpar-banco`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+            // Preparar dados para o gráfico
+            const dates = Object.keys(dateGroups).sort();
+            const principalsData = dates.map(date => dateGroups[date].principals);
+            const companionsData = dates.map(date => dateGroups[date].companions);
+            const labels = dates.map(date => new Date(date).toLocaleDateString('pt-BR', { 
+                day: '2-digit', 
+                month: '2-digit' 
+            }));
+            
+            if (chart) {
+                chart.destroy();
+            }
+            
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Convidados Principais',
+                            data: principalsData,
+                            backgroundColor: '#B76E79',
+                            borderColor: '#B76E79',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Acompanhantes',
+                            data: companionsData,
+                            backgroundColor: '#C0C0C0',
+                            borderColor: '#C0C0C0',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
                     },
-                    body: JSON.stringify({ senha })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    resultDiv.innerHTML = '<div class="message success">✅ Banco limpo com sucesso!</div>';
-                    // Limpar estatísticas também
-                    document.getElementById('statsResult').innerHTML = '';
-                } else {
-                    resultDiv.innerHTML = `<div class="message error">${data.message}</div>`;
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
                 }
-            } catch (error) {
-                resultDiv.innerHTML = '<div class="message error">Erro ao limpar banco</div>';
-            }
+            });
         }
         
-        // Fechar modal ao clicar fora
-        document.getElementById('modalOverlay')?.addEventListener('click', function(e) {
-            if (e.target === this) {
-                fecharModal();
-            }
+        // Atualizar timestamp
+        function updateLastUpdate() {
+            const now = new Date().toLocaleString('pt-BR');
+            document.getElementById('lastUpdate').textContent = `Atualizado: ${now}`;
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+            
+            // Auto-refresh a cada 30 segundos
+            setInterval(loadDashboard, 30000);
         });
     </script>
 </body>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Admin Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --rose-gold: #B76E79;
+            --prata: #C0C0C0;
+            --prata-claro: #E8E8E8;
+            --branco: #FFFFFF;
+            --texto-escuro: #333333;
+            --texto-claro: #666666;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--rose-gold) 0%, #8B5A63 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: var(--branco);
+            border-radius: 20px;
+            padding: 50px 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .login-title {
+            color: var(--rose-gold);
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .login-subtitle {
+            color: var(--texto-claro);
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .form-label {
+            display: block;
+            color: var(--texto-escuro);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--prata-claro);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--rose-gold);
+            box-shadow: 0 0 0 3px rgba(183, 110, 121, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--rose-gold);
+            color: var(--branco);
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            background: #9A5A64;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(183, 110, 121, 0.4);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            background: #FFEBEE;
+            color: #D32F2F;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="login-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 8px;">
+                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21Z" fill="currentColor"/>
+            </svg>
+            Admin Dashboard
+        </h1>
+        <p class="login-subtitle">Aniversário da Beh</p>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username" class="form-label">Usuário</label>
+                <input type="text" id="username" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" id="password" class="form-input" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Entrar</button>
+            
+            <div id="errorMessage" class="error-message"></div>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (username === 'brendinha' && password === 'beh-versario2026!') {
+                // Salvar token de autenticação
+                localStorage.setItem('adminAuth', 'authenticated');
+                // Redirecionar para admin
+                window.location.href = 'admin.html';
+            } else {
+                errorDiv.textContent = 'Usuário ou senha incorretos';
+                errorDiv.classList.add('show');
+                
+                // Limpar erro após 3 segundos
+                setTimeout(() => {
+                    errorDiv.classList.remove('show');
+                }, 3000);
+            }
+        });
+        
+        // Verificar se já está logado
+        if (localStorage.getItem('adminAuth') === 'authenticated') {
+            window.location.href = 'admin.html';
+        }
+    </script>
+</body>
+</html>
