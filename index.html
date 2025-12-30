@@ -19,81 +19,39 @@
 
     <!-- Container Principal -->
     <div class="main-container">
-        <!-- Título Principal -->
-        <div class="title-section">
-            <h1 class="main-title">18</h1>
-            <h2 class="sub-title">da Beh</h2>
-            <p class="invite-text">Venha comemorar comigo</p>
-        </div>
+        <!-- Mensagem de Prazo Encerrado -->
+        <div class="title-section" style="transform: translateY(-50px);">
+            <h1 class="main-title" style="font-size: 48px; letter-spacing: 4px;">Prazo Encerrado</h1>
+            <p class="invite-text" style="margin-top: 20px; line-height: 1.6;">
+                Infelizmente o prazo para confirmar presença acabou 😢
+            </p>
+            <p class="invite-text" style="margin-top: 15px; line-height: 1.6; color: var(--rose-gold); font-weight: 500;">
+                Mas aos convidados e acompanhantes que confirmaram presença,<br>
+                a Brendinha tem uma surpresa! 🎁✨
+            </p>
 
-        <!-- Data e Horário -->
-        <div class="event-date">
-            <span class="date-label">Dia</span>
-            <span class="date-value">10/01</span>
-            <span class="date-label" style="margin-top: 15px;">Horário</span>
-            <span class="date-value">18h00</span>
-        </div>
-
-        <!-- Localização -->
-        <div class="location-section">
-            <div class="location">
-                <span class="location-icon">📍</span>
-                <span class="location-text">Rua Oraide de Paula Pacheco, 476</span>
-            </div>
-            
-            <div class="location-details">
-                <span class="location-text">CEP 83503-110</span>
-                <span class="location-separator">•</span>
-                <span class="location-text">Almirante Tamandaré - PR</span>
-            </div>
-        </div>
-
-        <!-- Formulário de Confirmação -->
-        <div class="form-section" id="formSection">
-            <h3 class="form-title">Confirme sua presença</h3>
-            
-            <form id="confirmacaoForm">
-                <!-- Campo Principal + Botão Adicionar -->
-                <div class="input-group">
-                    <div class="input-wrapper">
-                        <input 
-                            type="text" 
-                            id="nome" 
-                            name="nome" 
-                            placeholder="Seu nome completo"
-                            required
-                            autocomplete="name"
-                            aria-label="Nome completo do convidado principal"
-                        >
-                        <div class="error-message" id="errorNome"></div>
+            <!-- Contagem Regressiva -->
+            <div style="margin-top: 40px;">
+                <p class="invite-text" style="margin-bottom: 15px; font-size: 14px;">Faltam para a festa:</p>
+                <div id="countdown" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <span id="days" style="font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--rose-gold);">--</span>
+                        <p style="font-size: 12px; color: var(--texto-claro); margin-top: 5px;">DIAS</p>
                     </div>
-                    
-                    <button 
-                        type="button" 
-                        class="btn-add-guest" 
-                        id="btnAddGuest"
-                        title="Deseja adicionar um acompanhante?"
-                        aria-label="Adicionar acompanhante"
-                    >
-                        <span class="icon">+</span>
-                    </button>
+                    <div style="text-align: center;">
+                        <span id="hours" style="font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--rose-gold);">--</span>
+                        <p style="font-size: 12px; color: var(--texto-claro); margin-top: 5px;">HORAS</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <span id="minutes" style="font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--rose-gold);">--</span>
+                        <p style="font-size: 12px; color: var(--texto-claro); margin-top: 5px;">MIN</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <span id="seconds" style="font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--rose-gold);">--</span>
+                        <p style="font-size: 12px; color: var(--texto-claro); margin-top: 5px;">SEG</p>
+                    </div>
                 </div>
-
-                <!-- Container para Acompanhantes (gerado dinamicamente) -->
-                <div id="guestsContainer" aria-live="polite" aria-label="Lista de acompanhantes"></div>
-
-                <button type="submit" class="btn-confirm" id="btnConfirmar">
-                    <span class="btn-icons"></span>
-                    <span class="btn-content">
-                        <span class="btn-text">Confirmar Presença</span>
-                        <span class="btn-loading" style="display: none;">
-                            <span class="spinner"></span>
-                        </span>
-                    </span>
-                </button>
-            </form>
-
-            <div id="mensagem" class="mensagem" style="display: none;" role="alert" aria-live="assertive"></div>
+            </div>
         </div>
 
         <!-- Mensagem de Sucesso -->
@@ -105,92 +63,40 @@
         </div>
     </div>
 
-    <!-- Botão Flutuante "Vai uma dica?" -->
-    <div class="hint-button-wrapper" id="hintButtonWrapper">
-        <button 
-            class="hint-btn" 
-            id="hintButton"
-            aria-label="Vai uma dica? Abrir sugestões de presentes"
-            aria-haspopup="dialog"
-            aria-expanded="false"
-        >
-            <span class="text">Vai uma dica?</span>
-        </button>
-    </div>
 
-    <!-- Pop-up de Sugestões de Presentes -->
-    <div 
-        class="popup-overlay" 
-        id="popupOverlay" 
-        style="display: none;"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="popupTitle"
-        aria-describedby="popupSubtitle"
-    >
-        <div class="popup">
-            <button 
-                class="popup-close" 
-                id="popupClose"
-                aria-label="Fechar sugestões de presentes"
-            >&times;</button>
-            <h2 class="popup-title" id="popupTitle">Dúvidas no presente?</h2>
-            <p class="popup-subtitle" id="popupSubtitle">Sua presença é o meu maior presente! Mas, se desejar me mimar, deixei algumas dicas para te ajudar a escolher algo especial</p>
-            
-            <div class="popup-columns">
-                <!-- Coluna 1: Vestuário -->
-                <div class="popup-column">
-                    <h3 class="column-title">Vestuário</h3>
-                    <ul class="column-list">
-                        <li>Croped, shorts, saias</li>
-                        <li>Calças largas (widleg)</li>
-                        <li>Jaquetas de couro</li>
-                        <li>Moletom</li>
-                        <li><strong>Tamanho:</strong> M (cima) / 38 (baixo)</li>
-                        <li><strong>Calçado:</strong> 38 (saltos, botas, tênis)</li>
-                    </ul>
-                </div>
-                
-                <!-- Coluna 2: Acessórios -->
-                <div class="popup-column">
-                    <h3 class="column-title">Acessórios</h3>
-                    <ul class="column-list">
-                        <li>Joias minimalistas</li>
-                        <li>Prata ou dourado</li>
-                        <li>Colares, brincos</li>
-                        <li>Pulseiras, anéis</li>
-                        <li><strong>Cores:</strong> Tons neutros</li>
-                    </ul>
-                </div>
-                
-                <!-- Coluna 3: Beleza e Cuidados -->
-                <div class="popup-column">
-                    <h3 class="column-title">Beleza e Cuidados</h3>
-                    <ul class="column-list">
-                        <li><strong>Cabelo:</strong> Produtos para cachos</li>
-                        <li><strong>Maquiagem:</strong> Tons neutros, blush rosado, gloss</li>
-                        <li><strong>Pele:</strong> Skincare para pele seca</li>
-                        <li><strong>Esmaltes:</strong> Neutros e coloridos</li>
-                        <li><strong>Cheiros:</strong> Floral, doce, amadeirados leves e cítrico adocicado</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Link da Lista de Desejos -->
-            <div class="wishlist-section">
-                <p class="wishlist-text">Ou visite minha lista de desejos:</p>
-                <a href="https://www.amazon.com.br/hz/wishlist/ls/X4Z2TB452KWA" target="_blank" rel="noopener noreferrer" class="btn-wishlist">
-                    <span class="btn-wishlist-icons"></span>
-                    <span class="btn-wishlist-content">
-                        Ver Lista na Amazon
-                    </span>
-                </a>
-            </div>
-            
-            <button class="btn-close-popup" id="btnFechar">Fechar</button>
-        </div>
-    </div>
 
+    <script>
+        // Contagem regressiva para 10/01/2026 às 18h (horário de Brasília)
+        // Brasília = UTC-3, então 18h Brasília = 21h UTC
+        const targetDate = new Date('2026-01-10T21:00:00Z').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        // Atualizar a cada segundo
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
     <script src="assets/js/confirmacao.js"></script>
 </body>
 </html>

@@ -162,14 +162,22 @@ class GuestField {
 }
 
 // Event Listeners
-form.addEventListener('submit', handleSubmit);
-popupClose.addEventListener('click', fecharPopup);
-btnFechar.addEventListener('click', fecharPopup);
-popupOverlay.addEventListener('click', (e) => {
-    if (e.target === popupOverlay) {
-        fecharPopup();
-    }
-});
+if (form) {
+    form.addEventListener('submit', handleSubmit);
+}
+if (popupClose) {
+    popupClose.addEventListener('click', fecharPopup);
+}
+if (btnFechar) {
+    btnFechar.addEventListener('click', fecharPopup);
+}
+if (popupOverlay) {
+    popupOverlay.addEventListener('click', (e) => {
+        if (e.target === popupOverlay) {
+            fecharPopup();
+        }
+    });
+}
 
 // Hint button event listener
 if (hintButton) {
@@ -210,10 +218,12 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Limpar mensagem quando o usuário começar a digitar
-nomeInput.addEventListener('input', () => {
-    esconderMensagem();
-    clearFieldError(nomeInput, errorNome);
-});
+if (nomeInput) {
+    nomeInput.addEventListener('input', () => {
+        esconderMensagem();
+        clearFieldError(nomeInput, errorNome);
+    });
+}
 
 /**
  * Adiciona um novo campo de acompanhante
