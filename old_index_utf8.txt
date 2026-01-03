@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#B76E79">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>18 da Beh - 10/01</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Confetes animados -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- Container Principal -->
+    <div class="main-container">
+        <!-- T├¡tulo Principal -->
+        <div class="title-section">
+            <h1 class="main-title">18</h1>
+            <h2 class="sub-title">da Beh</h2>
+            <p class="invite-text">Venha comemorar comigo</p>
+        </div>
+
+        <!-- Data -->
+        <div class="event-date">
+            <span class="date-label">Dia</span>
+            <span class="date-value">10/01</span>
+        </div>
+
+        <!-- Localiza├º├úo -->
+        <div class="location-section">
+            <div class="location">
+                <span class="location-icon">­ƒôì</span>
+                <span class="location-text">Rua Oraide de Paula Pacheco, 476</span>
+            </div>
+            
+            <div class="location-details">
+                <span class="location-text">CEP 83503-110</span>
+                <span class="location-separator">ÔÇó</span>
+                <span class="location-text">Almirante Tamandar├® - PR</span>
+            </div>
+        </div>
+
+        <!-- Formul├írio de Confirma├º├úo -->
+        <div class="form-section" id="formSection">
+            <h3 class="form-title">Confirme sua presen├ºa</h3>
+            
+            <form id="confirmacaoForm">
+                <!-- Campo Principal + Bot├úo Adicionar -->
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            name="nome" 
+                            placeholder="Seu nome completo"
+                            required
+                            autocomplete="name"
+                            aria-label="Nome completo do convidado principal"
+                        >
+                        <div class="error-message" id="errorNome"></div>
+                    </div>
+                    
+                    <button 
+                        type="button" 
+                        class="btn-add-guest" 
+                        id="btnAddGuest"
+                        title="Deseja adicionar um acompanhante?"
+                        aria-label="Adicionar acompanhante"
+                    >
+                        <span class="icon">+</span>
+                    </button>
+                </div>
+
+                <!-- Container para Acompanhantes (gerado dinamicamente) -->
+                <div id="guestsContainer" aria-live="polite" aria-label="Lista de acompanhantes"></div>
+
+                <button type="submit" class="btn-confirm" id="btnConfirmar">
+                    <span class="btn-icons"></span>
+                    <span class="btn-content">
+                        <span class="btn-text">Confirmar Presen├ºa</span>
+                        <span class="btn-loading" style="display: none;">
+                            <span class="spinner"></span>
+                        </span>
+                    </span>
+                </button>
+            </form>
+
+            <div id="mensagem" class="mensagem" style="display: none;" role="alert" aria-live="assertive"></div>
+        </div>
+
+        <!-- Mensagem de Sucesso -->
+        <div class="success-section" id="successSection" style="display: none;">
+            <div class="success-icon">Ô£ô</div>
+            <h3 class="success-title">Presen├ºa Confirmada!</h3>
+            <p class="success-message">Obrigada por confirmar! ­ƒÄé</p>
+            <p class="success-name" id="successName"></p>
+        </div>
+    </div>
+
+    <!-- Bot├úo Flutuante "Vai uma dica?" -->
+    <div class="hint-button-wrapper" id="hintButtonWrapper">
+        <button 
+            class="hint-btn" 
+            id="hintButton"
+            aria-label="Vai uma dica? Abrir sugest├Áes de presentes"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+        >
+            <span class="text" aria-hidden="true">Vai uma dica</span>
+            <span class="icon" aria-hidden="true">?</span>
+        </button>
+    </div>
+
+    <!-- Pop-up de Sugest├Áes de Presentes -->
+    <div 
+        class="popup-overlay" 
+        id="popupOverlay" 
+        style="display: none;"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="popupTitle"
+        aria-describedby="popupSubtitle"
+    >
+        <div class="popup">
+            <button 
+                class="popup-close" 
+                id="popupClose"
+                aria-label="Fechar sugest├Áes de presentes"
+            >&times;</button>
+            <h2 class="popup-title" id="popupTitle">D├║vidas no presente?</h2>
+            <p class="popup-subtitle" id="popupSubtitle">Sua presen├ºa ├® o meu maior presente! Mas, se desejar me mimar, deixei algumas dicas para te ajudar a escolher algo especial</p>
+            
+            <div class="popup-columns">
+                <!-- Coluna 1: Vestu├írio -->
+                <div class="popup-column">
+                    <h3 class="column-title">Vestu├írio</h3>
+                    <ul class="column-list">
+                        <li>Croped, shorts, saias</li>
+                        <li>Cal├ºas largas (widleg)</li>
+                        <li>Jaquetas de couro</li>
+                        <li>Moletom</li>
+                        <li><strong>Tamanho:</strong> P (cima) / 36 (baixo)</li>
+                        <li><strong>Cal├ºado:</strong> 38 (saltos, botas, t├¬nis)</li>
+                    </ul>
+                </div>
+                
+                <!-- Coluna 2: Acess├│rios -->
+                <div class="popup-column">
+                    <h3 class="column-title">Acess├│rios</h3>
+                    <ul class="column-list">
+                        <li>Joias minimalistas</li>
+                        <li>Prata ou dourado</li>
+                        <li>Colares, brincos</li>
+                        <li>Pulseiras, an├®is</li>
+                        <li><strong>Cores:</strong> Tons neutros</li>
+                    </ul>
+                </div>
+                
+                <!-- Coluna 3: Beleza e Cuidados -->
+                <div class="popup-column">
+                    <h3 class="column-title">Beleza e Cuidados</h3>
+                    <ul class="column-list">
+                        <li><strong>Cabelo:</strong> Produtos para cachos</li>
+                        <li><strong>Maquiagem:</strong> Tons neutros, blush rosado, gloss</li>
+                        <li><strong>Pele:</strong> Skincare para pele seca</li>
+                        <li><strong>Esmaltes:</strong> Neutros e coloridos</li>
+                        <li><strong>Cheiros:</strong> Floral, doce, amadeirados leves e c├¡trico adocicado</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Link da Lista de Desejos -->
+            <div class="wishlist-section">
+                <p class="wishlist-text">Ou visite minha lista de desejos:</p>
+                <a href="https://www.amazon.com.br/hz/wishlist/ls/X4Z2TB452KWA" target="_blank" rel="noopener noreferrer" class="btn-wishlist">
+                    <span class="btn-wishlist-icons"></span>
+                    <span class="btn-wishlist-content">
+                        Ver Lista na Amazon
+                    </span>
+                </a>
+            </div>
+            
+            <button class="btn-close-popup" id="btnFechar">Fechar</button>
+        </div>
+    </div>
+
+    <script src="assets/js/confirmacao.js"></script>
+</body>
+</html>

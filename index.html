@@ -52,6 +52,21 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Botão de Sugestões de Presentes -->
+            <div style="margin-top: 40px; display: flex; justify-content: center;">
+                <button 
+                    class="hint-btn" 
+                    id="hintButton"
+                    aria-label="Ainda não sabe qual presente comprar? Abrir sugestões de presentes"
+                    aria-haspopup="dialog"
+                    aria-expanded="false"
+                    onclick="abrirPopup()"
+                >
+                    <span class="text" aria-hidden="true">Ainda não sabe qual presente comprar</span>
+                    <span class="icon" aria-hidden="true">?</span>
+                </button>
+            </div>
         </div>
 
         <!-- Mensagem de Sucesso -->
@@ -63,7 +78,108 @@
         </div>
     </div>
 
+    <!-- Pop-up de Sugestões de Presentes -->
+    <div 
+        class="popup-overlay" 
+        id="popupOverlay" 
+        style="display: none;"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="popupTitle"
+        aria-describedby="popupSubtitle"
+        onclick="if(event.target === this) fecharPopup()"
+    >
+        <div class="popup">
+            <button 
+                class="popup-close" 
+                id="popupClose"
+                aria-label="Fechar sugestões de presentes"
+                onclick="fecharPopup()"
+            >&times;</button>
+            <h2 class="popup-title" id="popupTitle">Dúvidas no presente?</h2>
+            <p class="popup-subtitle" id="popupSubtitle">Sua presença é o meu maior presente! Mas, se desejar me mimar, deixei algumas dicas para te ajudar a escolher algo especial</p>
+            
+            <div class="popup-columns">
+                <!-- Coluna 1: Vestuário -->
+                <div class="popup-column">
+                    <h3 class="column-title">Vestuário</h3>
+                    <ul class="column-list">
+                        <li>Croped, shorts, saias</li>
+                        <li>Calças largas (widleg)</li>
+                        <li>Jaquetas de couro</li>
+                        <li>Moletom</li>
+                        <li><strong>Tamanho:</strong> P (cima) / 36 (baixo)</li>
+                        <li><strong>Calçado:</strong> 38 (saltos, botas, tênis)</li>
+                    </ul>
+                </div>
+                
+                <!-- Coluna 2: Acessórios -->
+                <div class="popup-column">
+                    <h3 class="column-title">Acessórios</h3>
+                    <ul class="column-list">
+                        <li>Joias minimalistas</li>
+                        <li>Prata ou dourado</li>
+                        <li>Colares, brincos</li>
+                        <li>Pulseiras, anéis</li>
+                        <li><strong>Cores:</strong> Tons neutros</li>
+                    </ul>
+                </div>
+                
+                <!-- Coluna 3: Beleza e Cuidados -->
+                <div class="popup-column">
+                    <h3 class="column-title">Beleza e Cuidados</h3>
+                    <ul class="column-list">
+                        <li><strong>Cabelo:</strong> Produtos para cachos</li>
+                        <li><strong>Maquiagem:</strong> Tons neutros, blush rosado, gloss</li>
+                        <li><strong>Pele:</strong> Skincare para pele seca</li>
+                        <li><strong>Esmaltes:</strong> Neutros e coloridos</li>
+                        <li><strong>Cheiros:</strong> Floral, doce, amadeirados leves e cítrico adocicado</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Link da Lista de Desejos -->
+            <div class="wishlist-section">
+                <p class="wishlist-text">Ou visite minha lista de desejos:</p>
+                <a href="https://www.amazon.com.br/hz/wishlist/ls/X4Z2TB452KWA" target="_blank" rel="noopener noreferrer" class="btn-wishlist">
+                    <span class="btn-wishlist-icons"></span>
+                    <span class="btn-wishlist-content">
+                        Ver Lista na Amazon
+                    </span>
+                </a>
+            </div>
+            
+            <button class="btn-close-popup" id="btnFechar" onclick="fecharPopup()">Fechar</button>
+        </div>
+    </div>
 
+    <script>
+        // Funções do popup
+        function abrirPopup() {
+            document.getElementById('popupOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            const hintButton = document.getElementById('hintButton');
+            if (hintButton) {
+                hintButton.setAttribute('aria-expanded', 'true');
+            }
+        }
+        
+        function fecharPopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+            document.body.style.overflow = '';
+            const hintButton = document.getElementById('hintButton');
+            if (hintButton) {
+                hintButton.setAttribute('aria-expanded', 'false');
+            }
+        }
+        
+        // Fechar popup com Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('popupOverlay').style.display === 'flex') {
+                fecharPopup();
+            }
+        });
+    </script>
 
     <script>
         // Contagem regressiva para 10/01/2026 às 18h (horário de Brasília)
