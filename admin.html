@@ -564,6 +564,126 @@
                 min-width: 50px !important;
             }
         }
+        
+        /* Photo Section */
+        .photos-section {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--sombra);
+            margin-top: 40px;
+        }
+        
+        .photos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .photos-count {
+            font-size: 14px;
+            color: var(--texto-claro);
+        }
+        
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .photo-item:hover {
+            transform: scale(1.02);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-delete {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 71, 87, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .photo-item:hover .photo-delete {
+            opacity: 1;
+        }
+        
+        .photo-delete:hover {
+            background: #ff3742;
+        }
+        
+        .photos-empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--texto-claro);
+        }
+        
+        /* Lightbox */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lightbox-overlay.show {
+            display: flex;
+        }
+        
+        .lightbox-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -663,6 +783,52 @@
                     <div class="spinner"></div>
                     Carregando lista de convidados...
                 </div>
+            </div>
+        </div>
+        
+        <!-- Photos Section -->
+        <div class="photos-section">
+            <div class="photos-header">
+                <h2 class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
+                        <path d="M4 5C4 4.44772 4.44772 4 5 4H19C19.5523 4 20 4.44772 20 5V19C20 19.5523 19.5523 20 19 20H5C4.44772 20 4 19.5523 4 19V5ZM6 6V14L10 10L14 14L16 12L18 14V6H6ZM18 16.8284L16 14.8284L14 16.8284L10 12.8284L6 16.8284V18H18V16.8284ZM8 9C8 9.55228 7.55228 10 7 10C6.44772 10 6 9.55228 6 9C6 8.44772 6.44772 8 7 8C7.55228 8 8 8.44772 8 9Z" fill="currentColor"/>
+                    </svg>
+                    Fotos da Festa
+                </h2>
+                <span class="photos-count" id="photosCount">0 fotos</span>
+            </div>
+            
+            <div id="photosGrid" class="photos-grid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Carregando fotos...
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lightbox -->
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <img id="lightboxImage" class="lightbox-image" src="" alt="Foto ampliada">
+    </div>
+    
+    <!-- Modal de Confirmação de Foto -->
+    <div class="modal-overlay" id="deletePhotoModal">
+        <div class="modal">
+            <div class="modal-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 5C4 4.44772 4.44772 4 5 4H19C19.5523 4 20 4.44772 20 5V19C20 19.5523 19.5523 20 19 20H5C4.44772 20 4 19.5523 4 19V5Z" stroke="#ff4757" stroke-width="2"/>
+                    <path d="M9 9L15 15M15 9L9 15" stroke="#ff4757" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3 class="modal-title">Excluir Foto?</h3>
+            <p class="modal-text" id="deletePhotoModalText">
+                Esta ação não pode ser desfeita.
+            </p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeDeletePhotoModal()">Cancelar</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmDeletePhoto()">Excluir</button>
             </div>
         </div>
     </div>
@@ -993,12 +1159,121 @@
             document.getElementById('lastUpdate').textContent = `Atualizado: ${now}`;
         }
         
+        // ========== PHOTO MANAGEMENT ==========
+        let allPhotos = [];
+        let deletePhotoData = null;
+        
+        // Load photos
+        async function loadPhotos() {
+            try {
+                const response = await fetch(`${API_URL}/api/fotos`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    allPhotos = data.fotos;
+                    renderPhotosGrid(data.fotos);
+                    document.getElementById('photosCount').textContent = `${data.total} foto${data.total !== 1 ? 's' : ''}`;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar fotos:', error);
+                document.getElementById('photosGrid').innerHTML = '<div class="photos-empty">Erro ao carregar fotos</div>';
+            }
+        }
+        
+        // Render photos grid
+        function renderPhotosGrid(photos) {
+            const container = document.getElementById('photosGrid');
+            
+            if (photos.length === 0) {
+                container.innerHTML = '<div class="photos-empty">📷 Nenhuma foto enviada ainda</div>';
+                return;
+            }
+            
+            let html = '';
+            photos.forEach(photo => {
+                html += `
+                    <div class="photo-item" onclick="openLightbox('${photo.url}')">
+                        <img src="${photo.url}" alt="${photo.nome_arquivo || 'Foto'}" loading="lazy">
+                        <button class="photo-delete" onclick="event.stopPropagation(); openDeletePhotoModal(${photo.id}, '${photo.nome_arquivo || 'esta foto'}')" title="Excluir foto">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                <path d="M7 4V2H17V4H22V6H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V6H2V4H7ZM6 6V20H18V6H6Z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Open lightbox
+        function openLightbox(url) {
+            document.getElementById('lightboxImage').src = url;
+            document.getElementById('lightbox').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close lightbox
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        
+        // Open delete photo modal
+        function openDeletePhotoModal(id, nome) {
+            deletePhotoData = { id, nome };
+            document.getElementById('deletePhotoModalText').textContent = `Tem certeza que deseja excluir "${nome}"? Esta ação não pode ser desfeita.`;
+            document.getElementById('deletePhotoModal').classList.add('show');
+        }
+        
+        // Close delete photo modal
+        function closeDeletePhotoModal() {
+            document.getElementById('deletePhotoModal').classList.remove('show');
+            deletePhotoData = null;
+        }
+        
+        // Confirm delete photo
+        async function confirmDeletePhoto() {
+            if (!deletePhotoData) return;
+            
+            const { id, nome } = deletePhotoData;
+            closeDeletePhotoModal();
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/fotos/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Foto excluída com sucesso!', 'success');
+                    await loadPhotos();
+                } else {
+                    showToast('Erro ao excluir foto: ' + data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir foto:', error);
+                showToast('Erro ao excluir foto', 'error');
+            }
+        }
+        
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+                closeDeletePhotoModal();
+            }
+        });
+        
         // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
             loadDashboard();
+            loadPhotos();
             
             // Auto-refresh a cada 30 segundos
             setInterval(loadDashboard, 30000);
+            setInterval(loadPhotos, 30000);
         });
     </script>
 </body>
